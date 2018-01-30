@@ -53,7 +53,7 @@ var http = require("http"); //need to http
 var fs = require("fs"); //need to read static files
 var url = require("url"); //to parse url strings
 
-fs.readFile('/songs/Sister_Golden_Hair.txt', function(err,data){
+fs.readFile("/songs/Sister Golden Hair.txt", function(err,data){
     if (err) throw err;
 
     var block = data.toString().split("\n"); //x = ['hello hi bye', 'nikjrs hi hello', 'docls yucl']
@@ -62,10 +62,38 @@ fs.readFile('/songs/Sister_Golden_Hair.txt', function(err,data){
     for(var i=0; i<block.length; i++){
         array=block[i].split(" ");
         for(var j=0; j<array.length; j++){
-            sisterGoldenHair.push({word: array[j], x:20, y:50+20*i});
+            sisterGoldenHair.push({word: array[j], x:10+j*90, y:50+i*45});
         }
     }
 });
+
+fs.readFile("/songs/Brown Eyed Girl.txt", function(err,data){
+    if (err) throw err;
+
+    var block2= data.toString().split("\n");
+
+    for(var i=0; i<block2.length;i++){
+        array=block2[i].split(" ");
+        for(var j=0; j<array.length;j++){
+            brownEyedGirl.push({word: array[j], x:10+j*140, y:50+i*45})
+        }
+    }
+});
+
+fs.readFile("/songs/Peaceful Easy Feeling.txt", function(err,data){
+    if (err) throw err;
+
+    var block3= data.toString().split("\n");
+
+    for(var i=0; i<block3.length; i++){
+        array=block3[i].split(" ");
+        for(var j=0;j<array.length;j++){
+            peacefulEasyFeeling.push({word: array[j], x:10+j*120, y:50+i*45})
+        }
+    }
+
+});
+
 
 var counter = 1000; //to count invocations of function(req,res)
 
