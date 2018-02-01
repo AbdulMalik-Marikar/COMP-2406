@@ -32,12 +32,14 @@ data and process it.
   the words array in the client app.
 */
 
+//CITATION- skeleton code from http://people.scs.carleton.ca/~ldnel/2406winter2018/tutorials/Tutorial02/
 //hard coded songs to serve client
 var peacefulEasyFeeling = [];
 
 var block = [];
 var block2 = [];
 var block3 = [];
+
 var sisterGoldenHair = [];
 
 
@@ -55,7 +57,7 @@ var http = require("http"); //need to http
 var fs = require("fs"); //need to read static files
 var url = require("url"); //to parse url strings
 
-fs.readFile("/songs/Sister Golden Hair.txt", function(err,data){
+fs.readFile("songs/Sister Golden Hair.txt", function(err,data){
     if (err) throw err;
 
     block = data.toString().split("\n"); //x = ['hello hi bye', 'nikjrs hi hello', 'docls yucl']
@@ -65,32 +67,33 @@ fs.readFile("/songs/Sister Golden Hair.txt", function(err,data){
         array=block[i].split(" ");
         for(var j=0; j<array.length; j++){
             sisterGoldenHair.push({word: array[j], x:10+j*100, y:50+i*55});
+
         }
     }
 });
 
-fs.readFile("/songs/Brown Eyed Girl.txt", function(err,data){
+fs.readFile("songs/Brown Eyed Girl.txt", function(err,data){
     if (err) throw err;
 
-    block2= data.toString().split("\n");
+    block2= data.toString().split("\n");// Splitting the song into its blocks
 
     for(var i=0; i<block2.length;i++){
-        array=block2[i].split(" ");
+        array=block2[i].split(" ");//splitting the block into each word
         for(var j=0; j<array.length;j++){
-            brownEyedGirl.push({word: array[j], x:10+j*150, y:50+i*55})
+            brownEyedGirl.push({word: array[j], x:10+j*150, y:50+i*55})//pushing each individual word
         }
     }
 });
 
-fs.readFile("/songs/Peaceful Easy Feeling.txt", function(err,data){
+fs.readFile("songs/Peaceful Easy Feeling.txt", function(err,data){
     if (err) throw err;
 
-    block3 = data.toString().split("\n");
+    block3 = data.toString().split("\n");// Splitting the song into its blocks
 
     for(var i=0; i<block3.length; i++){
-        array=block3[i].split(" ");
+        array=block3[i].split(" ");//splitting the block into each word
         for(var j=0;j<array.length;j++){
-            peacefulEasyFeeling.push({word: array[j], x:10+j*153, y:50+i*55})
+            peacefulEasyFeeling.push({word: array[j], x:10+j*153, y:50+i*55})//pushing each individual word
         }
     }
 
@@ -161,6 +164,7 @@ http
 
 
         console.log("USER REQUEST: " + dataObj.text);
+        //allows the canvas to acess the data
         var returnObj = {};
         //returnObj.text = "NOT FOUND: " + dataObj.text;
         if(dataObj.text == "Peaceful Easy Feeling"){

@@ -297,7 +297,7 @@ function handleSubmitButton () {
 			//replace word array with new words if there are any
 			if(responseObj.wordArray) words = responseObj.wordArray;
             for (var i =0;i<responseObj.textArray.length;i++){
-            textDiv.innerHTML = textDiv.innerHTML += "<p>" + responseObj.textArray[i] + "</p>";
+            textDiv.innerHTML = textDiv.innerHTML += "<p>" + responseObj.textArray[i] + "</p>";//Prints the song under the canvas
         }
 			});
 	}
