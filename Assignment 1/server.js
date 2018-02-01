@@ -35,7 +35,9 @@ data and process it.
 //hard coded songs to serve client
 var peacefulEasyFeeling = [];
 
-
+var block = [];
+var block2 = [];
+var block3 = [];
 var sisterGoldenHair = [];
 
 
@@ -56,13 +58,13 @@ var url = require("url"); //to parse url strings
 fs.readFile("/songs/Sister Golden Hair.txt", function(err,data){
     if (err) throw err;
 
-    var block = data.toString().split("\n"); //x = ['hello hi bye', 'nikjrs hi hello', 'docls yucl']
+    block = data.toString().split("\n"); //x = ['hello hi bye', 'nikjrs hi hello', 'docls yucl']
     var array= [];                      //x1 = ['hello','hi','bye','nikirs','hi']<-array of objects
 
     for(var i=0; i<block.length; i++){
         array=block[i].split(" ");
         for(var j=0; j<array.length; j++){
-            sisterGoldenHair.push({word: array[j], x:10+j*90, y:50+i*45});
+            sisterGoldenHair.push({word: array[j], x:10+j*100, y:50+i*55});
         }
     }
 });
@@ -70,12 +72,12 @@ fs.readFile("/songs/Sister Golden Hair.txt", function(err,data){
 fs.readFile("/songs/Brown Eyed Girl.txt", function(err,data){
     if (err) throw err;
 
-    var block2= data.toString().split("\n");
+    block2= data.toString().split("\n");
 
     for(var i=0; i<block2.length;i++){
         array=block2[i].split(" ");
         for(var j=0; j<array.length;j++){
-            brownEyedGirl.push({word: array[j], x:10+j*140, y:50+i*45})
+            brownEyedGirl.push({word: array[j], x:10+j*150, y:50+i*55})
         }
     }
 });
@@ -83,12 +85,12 @@ fs.readFile("/songs/Brown Eyed Girl.txt", function(err,data){
 fs.readFile("/songs/Peaceful Easy Feeling.txt", function(err,data){
     if (err) throw err;
 
-    var block3= data.toString().split("\n");
+    block3 = data.toString().split("\n");
 
     for(var i=0; i<block3.length; i++){
         array=block3[i].split(" ");
         for(var j=0;j<array.length;j++){
-            peacefulEasyFeeling.push({word: array[j], x:10+j*120, y:50+i*45})
+            peacefulEasyFeeling.push({word: array[j], x:10+j*153, y:50+i*55})
         }
     }
 
@@ -164,16 +166,22 @@ http
         if(dataObj.text == "Peaceful Easy Feeling"){
             returnObj.text = "Found" + dataObj.text;
             returnObj.wordArray = peacefulEasyFeeling;
+            returnObj.textArray = block3;
         }else if(dataObj.text == "Sister Golden Hair"){
             returnObj.text = "Found" + dataObj.text;
             returnObj.wordArray = sisterGoldenHair;
+            returnObj.textArray = block;
         }else if(dataObj.text== "Brown Eyed Girl"){
             returnObj.text = "Found" +dataObj.text;
             returnObj.wordArray = brownEyedGirl;
+            returnObj.textArray = block2;
         }else {
             returnObj.text = "NOT FOUND: " +dataObj.text;
         }
 
+        // for(i=0; i<returnObj.word.length ; i++){
+        // textDiv.innerHTML=textDiv.innerHTML+`<p> ${returnObj.wordArray[i]};</p>`
+        // }
         //object to return to client
         response.writeHead(200, { "Content-Type": MIME_TYPES["txt"] });
         response.end(JSON.stringify(returnObj)); //send just the JSON object
