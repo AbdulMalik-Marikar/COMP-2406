@@ -1,142 +1,129 @@
 /*
-Javasript to handle mouse dragging and release
-to drag a string around the html canvas
-Keyboard arrow keys are used to move a moving box around
-
-Here we are doing all the work with javascript and jQuery. (none of the words
-are HTML, or DOM, elements. The only DOM element is just the canvas on which
-where are drawing and a text field and button where the user can type data
-
-This example shows examples of using JQuery
-JQuery is a popular helper library the has useful methods,
-especially for sendings asynchronous requests to the server
-and catching the response.
-
-See the W3 Schools website to learn basic JQuery
-JQuery syntax:
-$(selector).action();
-e.g.
-$(this).hide() - hides the current element.
-$("p").hide() - hides all <p> elements.
-$(".test").hide() - hides all elements with class="test".
-$("#test").hide() - hides the element with id="test".
-
-Mouse event handlers are being added and removed using jQuery and
-a jQuery event object is being passed to the handlers
-
-Keyboard keyDown handler is being used to move a "moving box" around
-Keyboard keyUP handler is used to trigger communication with the
-server via POST message sending JSON data
-
+Client-side javascript for 2406 assignment 1
+(c) Louis D. Nel 2018
 */
 
-//Use javascript array of objects to represent words and their locations
-var words = [];
-// words.push({word: "", x:50, y:50});
-// words.push({word: "", x:70, y:50});
-// words.push({word: "the", x:120, y:50});
-// words.push({word: "way", x:170, y:50});
-// words.push({word: "your", x:230, y:50});
-// words.push({word: "sparkling", x:300, y:50});
-// words.push({word: "earrings", x:430, y:50});
-// words.push({word: "lay", x:540, y:50});
 
-var movingString = {word: "",
-                    x: 0,
-					y:0,
-					xDirection: 0, //+1 for leftwards, -1 for rightwards
-					yDirection: -10, //+1 for downwards, -1 for upwards
-					stringWidth: 0, //will be updated when drawn
-					stringHeight: 0}; //assumed height based on drawing point size
 
-//indended for keyboard control
-// var movingBox = {x: 50,
-//                  y: 50,
-// 				 width: 100,
-// 				 height: 100};
+var words = []; //array of drag-able lyrics and chords
 
-var wayPoints = []; //locations where the moving box has been
+//leave this moving word for fun and for using it to
+//provide status info to client.
+//NOT part of assignment requirements
+var movingString = {word: "Moving",
+                    x: 100,
+					y:100,
+					xDirection: 1, //+1 for leftwards, -1 for rightwards
+					yDirection: 1, //+1 for downwards, -1 for upwards
+					stringWidth: 50, //will be updated when drawn
+					stringHeight: 24}; //assumed height based on drawing point size
 
-var timer;
 
-var wordBeingMoved;
-
-var deltaX, deltaY; //location where mouse is pressed
+var timer; //timer for animation of moving string etc.
+var wordBeingMoved; //word being dragged by the mouse
+var deltaX, deltaY; //location where mouse is pressed relative to word origin
 var canvas = document.getElementById('canvas1'); //our drawing canvas
+var fontPointSize = 18; //point size for chord and lyric text
+var wordHeight = 20; //estimated height of a string in the editor
+var editorFont = 'Courier New'; //font for your editor -must be monospace font
+var lineHeight = 40; //nominal height of text line
+var lyricLineOffset = lineHeight*5/8; //nominal offset for lyric line below chords
+var topMargin = 40; //hard coded top margin white space of page
+var leftMargin = 40; //hard code left margin white space of page
+
+var wordTargetRect = {x: 0, y:0, width: 0, height: 0}; //used for debugging
+                                                       //rectangle around word boundary
+
 
 function getWordAtLocation(aCanvasX, aCanvasY){
 
-	  //locate the word near aCanvasX,aCanvasY
-      var context = canvas.getContext('2d');
+	  //locate the word near aCanvasX,aCanvasY co-ordinates
+	  //aCanvasX and aCanvasY are assumed to be X,Y loc
+	  //relative to upper left origin of canvas
 
-	  //Just use crude region for now.
-	  //should be improved to using lenght of word etc.
+	  //used to get the word mouse is clicked on
 
-	  //note you will have to click near the start of the word
-	  //as it is implemented now
+	  var context = canvas.getContext('2d');
+
 	  for(var i=0; i<words.length; i++){
-          var x = words[i].word.length;
-		 if(Math.abs(words[i].x - aCanvasX) <20*x  &&
-		    Math.abs(words[i].y - aCanvasY) < 20) return words[i];
+	     var wordWidth = context.measureText(words[i].word).width;
+		 if((aCanvasX > words[i].x && aCanvasX < (words[i].x + wordWidth))  &&
+			    (aCanvasY > words[i].y - wordHeight && aCanvasY < words[i].y)) {
+			//set word targeting rectangle for debugging
+			wordTargetRect = {x: words[i].x, y: words[i].y-wordHeight, width: wordWidth, height : wordHeight};
+			return words[i];} //return the word found
 	  }
-	  return null;
+	  return null; //no word found at location
     }
 
-var drawCanvas = function(){
+function drawCanvas(){
 
     var context = canvas.getContext('2d');
+	var lyricFillColor = 'cornflowerblue';
+	var lyricStrokeColor = 'blue';
+	var chordFillColor = 'green';
+	var chordStrokeColor = 'green';
 
     context.fillStyle = 'white';
     context.fillRect(0,0,canvas.width,canvas.height); //erase canvas
 
-    context.font = '20pt Arial';
+    context.font = '' + fontPointSize + 'pt ' + editorFont;
     context.fillStyle = 'cornflowerblue';
     context.strokeStyle = 'blue';
 
-    for(var i=0; i<words.length; i++){  //note i declared as var
-
+	//draw drag-able lyric and chord words
+    for(var i=0; i<words.length; i++){
 			var data = words[i];
+			if(data.lyric){
+			    context.fillStyle = lyricFillColor;
+				context.strokeStyle = lyricStrokeColor;
+			}
+			if(data.chord){
+			    context.fillStyle = chordFillColor;
+				context.strokeStyle = chordStrokeColor;
+			}
 			context.fillText(data.word, data.x, data.y);
             context.strokeText(data.word, data.x, data.y);
-
 	}
 
+	//draw box around word last targeted with mouse -for debugging
+	//context.strokeRect(wordTargetRect.x, wordTargetRect.y, wordTargetRect.width, wordTargetRect.height);
+
+	/*
+    context.fillStyle = 'red';
     movingString.stringWidth = context.measureText(	movingString.word).width;
-	//console.log(movingString.stringWidth);
-    //context.fillText(movingString.word, movingString.x, movingString.y);
+    context.fillText(movingString.word, movingString.x, movingString.y);
+	*/
 
-    //draw moving box
-	// context.fillRect(movingBox.x,
-	//                  movingBox.y,
-	// 				 movingBox.width,
-	// 				 movingBox.height);
 
-	//draw moving box way points
-	for(i in wayPoints){
-		context.strokeRect(wayPoints[i].x,
-		             wayPoints[i].y,
-					 movingBox.width,
-					 movingBox.height);
-	}
-	//draw circle
-//     context.beginPath();
-//     context.arc(canvas.width/2, //x co-ord
-//             canvas.height/2, //y co-ord
-// 			canvas.height/2 - 5, //radius
-// 			0, //start angle
-// 			2*Math.PI //end angle
-// 			);
-//     context.stroke();
-    }
+}
+
+function getCanvasMouseLocation(e){
+   //provide the mouse location relative to the upper left corner
+   //of the canvas
+
+   /*
+   This code took some trial and error. If someone wants to write a
+   nice tutorial on how mouse-locations work that would be great.
+   */
+	var rect = canvas.getBoundingClientRect();
+
+	//account for amount the document scroll bars might be scrolled
+	var scrollOffsetX = $(document).scrollLeft();
+	var scrollOffsetY = $(document).scrollTop();
+
+    var canX = e.pageX - rect.left -scrollOffsetX;
+    var canY = e.pageY - rect.top -scrollOffsetY;
+
+	return {canvasX: canX, canvasY: canY};
+
+}
 
 function handleMouseDown(e){
 
-	//get mouse location relative to canvas top left
-	var rect = canvas.getBoundingClientRect();
-    //var canvasX = e.clientX - rect.left;
-    //var canvasY = e.clientY - rect.top;
-    var canvasX = e.pageX - rect.left; //use jQuery event object pageX and pageY
-    var canvasY = e.pageY - rect.top;
+	var canvasMouseLoc = getCanvasMouseLocation(e);
+	var canvasX = canvasMouseLoc.canvasX;
+	var canvasY = canvasMouseLoc.canvasY;
 	console.log("mouse down:" + canvasX + ", " + canvasY);
 
 	wordBeingMoved = getWordAtLocation(canvasX, canvasY);
@@ -144,10 +131,8 @@ function handleMouseDown(e){
 	if(wordBeingMoved != null ){
 	   deltaX = wordBeingMoved.x - canvasX;
 	   deltaY = wordBeingMoved.y - canvasY;
-	   //document.addEventListener("mousemove", handleMouseMove, true);
-       //document.addEventListener("mouseup", handleMouseUp, true);
-	$("#canvas1").mousemove(handleMouseMove);
-	$("#canvas1").mouseup(handleMouseUp);
+	   $("#canvas1").mousemove(handleMouseMove);
+	   $("#canvas1").mouseup(handleMouseUp);
 
 	}
 
@@ -162,12 +147,13 @@ function handleMouseDown(e){
 
 function handleMouseMove(e){
 
-	console.log("mouse move");
+	//console.log("mouse move");
 
-	//get mouse location relative to canvas top left
-	var rect = canvas.getBoundingClientRect();
-    var canvasX = e.pageX - rect.left;
-    var canvasY = e.pageY - rect.top;
+	var canvasMouseLoc = getCanvasMouseLocation(e);
+	var canvasX = canvasMouseLoc.canvasX;
+	var canvasY = canvasMouseLoc.canvasY;
+
+	console.log("move: " + canvasX + "," + canvasY);
 
 	wordBeingMoved.x = canvasX + deltaX;
 	wordBeingMoved.y = canvasY + deltaY;
@@ -178,12 +164,8 @@ function handleMouseMove(e){
 	}
 
 function handleMouseUp(e){
-	console.log("mouse up");
-
+	//console.log("mouse up");
 	e.stopPropagation();
-
-    //$("#canvas1").off(); //remove all event handlers from canvas
-    //$("#canvas1").mousedown(handleMouseDown); //add mouse down handler
 
 	//remove mouse move and mouse up handlers but leave mouse down handler
     $("#canvas1").off("mousemove", handleMouseMove); //remove mouse move handler
@@ -192,21 +174,16 @@ function handleMouseUp(e){
 	drawCanvas(); //redraw the canvas
 	}
 
-//JQuery Ready function -called when HTML has been parsed and DOM
-//created
-//can also be just $(function(){...});
-//much JQuery code will go in here because the DOM will have been loaded by the time
-//this runs
 
 function handleTimer(){
-	// movingString.x = (movingString.x + 5*movingString.xDirection);
-	// movingString.y = (movingString.y + 5*movingString.yDirection);
-    //
-	// //keep inbounds of canvas
-	// if(movingString.x + movingString.stringWidth > canvas.width) movingString.xDirection = -1;
-	// if(movingString.x < 0) movingString.xDirection = 1;
-	// if(movingString.y > canvas.height) movingString.yDirection = -1;
-	// if(movingString.y - movingString.stringHeight < 0) movingString.yDirection = 1;
+	movingString.x = (movingString.x + 5*movingString.xDirection);
+	movingString.y = (movingString.y + 5*movingString.yDirection);
+
+	//keep moving string within canvas bounds
+	if(movingString.x + movingString.stringWidth > canvas.width) movingString.xDirection = -1;
+	if(movingString.x < 0) movingString.xDirection = 1;
+	if(movingString.y > canvas.height) movingString.yDirection = -1;
+	if(movingString.y - movingString.stringHeight < 0) movingString.yDirection = 1;
 
 	drawCanvas()
 }
@@ -222,18 +199,7 @@ function handleTimer(){
 
 function handleKeyDown(e){
 
-	console.log("keydown code = " + e.which );
-
-	var dXY = 5; //amount to move in both X and Y direction
-	if(e.which == UP_ARROW && movingBox.y >= dXY)
-	   movingBox.y -= dXY;  //up arrow
-	if(e.which == RIGHT_ARROW && movingBox.x + movingBox.width + dXY <= canvas.width)
-	   movingBox.x += dXY;  //right arrow
-	if(e.which == LEFT_ARROW && movingBox.x >= dXY)
-	   movingBox.x -= dXY;  //left arrow
-	if(e.which == DOWN_ARROW && movingBox.y + movingBox.height + dXY <= canvas.height)
-	   movingBox.y += dXY;  //down arrow
-
+	//console.log("keydown code = " + e.which );
     var keyCode = e.which;
     if(keyCode == UP_ARROW | keyCode == DOWN_ARROW){
        //prevent browser from using these with text input drop downs
@@ -244,20 +210,9 @@ function handleKeyDown(e){
 }
 
 function handleKeyUp(e){
-	console.log("key UP: " + e.which);
+	//console.log("key UP: " + e.which);
 	if(e.which == RIGHT_ARROW | e.which == LEFT_ARROW | e.which == UP_ARROW | e.which == DOWN_ARROW){
-	var dataObj = {x: movingBox.x, y: movingBox.y};
-	//create a JSON string representation of the data object
-	var jsonString = JSON.stringify(dataObj);
-
-
-	$.post("positionData", jsonString, function(data, status){
-			console.log("data: " + data);
-			console.log("typeof: " + typeof data);
-			var wayPoint = JSON.parse(data);
-			wayPoints.push(wayPoint);
-			for(i in wayPoints) console.log(wayPoints[i]);
-			});
+         //do nothing for now
 	}
 
 	if(e.which == ENTER){
@@ -268,38 +223,213 @@ function handleKeyUp(e){
 	e.stopPropagation();
     e.preventDefault();
 
+}
+
+
+
+
+
+
+
+
+/* Okay so I just played around with his code until it did what I wanted it to do
+so i'm not entirely sure what everything's doing but :
+im making an upperstring and lowerstring like in tutorial 3
+chords print first then lyrics get printed 25 pixels below the chords
+The chords/lyrics get their colours from the drawCanvas function above so that function will check if
+it's a lyric or a chord and choose a colour accordingly
+I distinguish each chord or lyric by pushing it into the words array with a property "chord" or "lyric" (see line 306)*/
+
+function parseChordProFormat(chordProLinesArray){
+    //parse the song lines with embedded chord pro chords into individual movable words
+
+	//clear any newline or return characters as a precaution
+	for(var i=0; i<chordProLinesArray.length; i++) {
+        chordProLinesArray[i] = chordProLinesArray[i].replace(/(\r\n|\n|\r)/gm,"");
+
+	}
+
+    var lyricLine = ''; //string representing the words and chords
+
+    //add lines of text to html <p> elements
+    let textDiv = document.getElementById("text-area")
+    textDiv.innerHTML = '';
+
+    for(var i=0; i<chordProLinesArray.length; i++) {
+       var line = chordProLinesArray[i];
+	   textDiv.innerHTML = textDiv.innerHTML + `<p> ${line}</p>`
+
+	   lyricLine = ''; //line of lyrics and chords
+	   var upperString = '';
+	   var lowerString = '';
+	   //separate chords and lyrics by a blank. Preserve the [] characters in chord symbols
+
+	   var isChord = false;
+	   for (var charIndex = 0; charIndex < line.length; charIndex++){
+
+	   	var ch = line.charAt(charIndex);
+	   	if (ch == '['){
+	   		isChord = true;
+	   		upperString+="";
+	   	}
+	   	else if (ch == ']'){
+
+	   		upperString += "";
+	   		isChord = false;
+	   	}else if (isChord){
+	   		upperString += ch;
+	   	}else{
+	   		upperString += " ";
+	   	}
+	   }
+
+	   lyricLine = upperString;
+	    var characterWidth = canvas.getContext('2d').measureText('m').width;  //width of one character
+
+	 //Make drag-able words
+	 lyricOrChord = lyricLine;
+	 lyricLine += ' '; //add blank to lyrics line just so it ends in a blank
+	 if(lyricLine.trim().length > 0){
+	   var theLyricWord = '';
+	   var theLyricLocationIndex = -1;
+	   for(var j=0; j<lyricLine.length; j++){
+	      var ch = lyricLine.charAt(j);
+		  if(ch == ' '){
+		    //start or end of word or chord symbol
+			if(theLyricWord.trim().length > 0){
+
+				if (lyricOrChord == upperString){
+					words.push({word: theLyricWord,
+			               x: leftMargin + theLyricLocationIndex * characterWidth,
+                           y: topMargin + i * 2 * lineHeight + lyricLineOffset,
+						   chord: 'lyric'
+                           });
+				} else{
+					words.push({word: theLyricWord,
+			               x: leftMargin + theLyricLocationIndex * characterWidth,
+                           y: topMargin + i * 2 * lineHeight + lyricLineOffset,
+						   lyric: 'lyric'
+                           });
+				}
+
+			}
+		    theLyricWord = '';
+			theLyricLocationIndex = -1;
+
+		  }
+          else{
+		    //its part of a lyric word
+			theLyricWord += ch;
+			if(theLyricLocationIndex === -1) theLyricLocationIndex = j;
+		 }
+	   }
+	 } //end make lyric chord words
+
+	   for (var charIndex = 0; charIndex < line.length; charIndex++){
+
+	   	var ch = line.charAt(charIndex);
+	   	if (ch == '['){
+	   		isChord = true;
+	   		lowerString+=" ";
+	   	}
+	   	else if (ch == ']'){
+
+	   		lowerString += " ";
+	   		isChord = false;
+	   	}else if (isChord){
+	   		lowerString += "";
+	   	}else{
+	   		lowerString += ch;
+	   	}
+	   }
+
+	   lyricLine = lowerString;
+
+	    characterWidth = canvas.getContext('2d').measureText('m').width;  //width of one character
+
+	 //Make drag-able words
+	 lyricOrChord = lyricLine;
+	 lyricLine += ' '; //add blank to lyrics line just so it ends in a blank
+	 if(lyricLine.trim().length > 0){
+	   theLyricWord = '';
+	   theLyricLocationIndex = -1;
+	   for(var j=0; j<lyricLine.length; j++){
+	      ch = lyricLine.charAt(j);
+		  if(ch == ' '){
+		    //start or end of word or chord symbol
+			if(theLyricWord.trim().length > 0){
+
+				if (lyricOrChord == upperString){
+					words.push({word: theLyricWord,
+			               x: leftMargin + theLyricLocationIndex * characterWidth,
+                           y: topMargin + i * 2 * lineHeight + lyricLineOffset,
+						   chord: 'lyric'
+                           });
+				} else{
+					words.push({word: theLyricWord,
+			               x: leftMargin + theLyricLocationIndex * characterWidth,
+                           y: (topMargin + i * 2 * lineHeight + lyricLineOffset) + 25,
+						   lyric: 'lyric'
+                           });
+				}
+
+			}
+		    theLyricWord = '';
+			theLyricLocationIndex = -1;
+
+		  }
+          else{
+		    //its part of a lyric word
+			theLyricWord += ch;
+			if(theLyricLocationIndex === -1) theLyricLocationIndex = j;
+		 }
+	   }
+	 } //end make lyric chord words
+
+
+
+	   // console.log(upperString);
+
+
+ 	 //Now turn lyrics line into individual drag-able words
+	 //Create Movable Words
+
+  }
 
 }
+
 
 function handleSubmitButton () {
 
     var userText = $('#userTextField').val(); //get text from user text input field
-	if(userText && userText != ''){
-	   //user text was not empty
-       let textDiv= document.getElementById("text-area");
-       //textDiv.innerHTML = textDiv.innerHTML +`<p> ${userText},</p>`
+	//clear lines of text in textDiv
+    let textDiv = document.getElementById("text-area")
+    textDiv.innerHTML = '';
 
-       //textDiv.innerHTML=textDiv.innerHTML+`<p> ${returnObj.wordArray[i]};</p>`
-
-
-	   var userRequestObj = {text: userText}; //make object to send to server
-       var userRequestJSON = JSON.stringify(userRequestObj); //make json string
+	if(userText && userText !== ''){
+	   var userRequestObj = {text: userText};
+       var userRequestJSON = JSON.stringify(userRequestObj);
 	   $('#userTextField').val(''); //clear the user text field
 
-	   //Prepare a POST message for the server and a call back function
-	   //to catch the server repsonse.
        //alert ("You typed: " + userText);
-	   $.post("userText", userRequestJSON, function(data, status){
+	   $.post("fetchSong", userRequestJSON, function(data, status){
 			console.log("data: " + data);
 			console.log("typeof: " + typeof data);
-			var responseObj = JSON.parse(data);
+			var responseObj = data;
 			movingString.word = responseObj.text;
-			//replace word array with new words if there are any
-			if(responseObj.wordArray) words = responseObj.wordArray;
-            for (var i =0;i<responseObj.textArray.length;i++){
-            textDiv.innerHTML = textDiv.innerHTML += "<p>" + responseObj.textArray[i] + "</p>";//Prints the song under the canvas
-        }
+			words = []; //clear drag-able words array;
+			if(responseObj.songLines) parseChordProFormat(responseObj.songLines);
 			});
+	}
+
+}
+
+function handleRefreshButton(){
+
+	let textDiv = document.querySelector("#text-area");
+
+	for (var i = 0; i < words.length;i++){
+			textDiv.innerHTML += words[i].word ;
 	}
 
 }

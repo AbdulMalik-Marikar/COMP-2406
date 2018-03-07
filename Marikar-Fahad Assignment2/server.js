@@ -1,106 +1,32 @@
 /*
-Here we are prepared to receive a POST message from the client,
-and acknowledge that, with a very limited response back to the client
+2406 Assignment #1
+(c) Louis D. Nel 2018
+This is a simple static server for serving the applications files for assignment #1
+It is also the POST request handler for song requests and requests to save songs.
+The chords and lyric files are parsed only to an array of lines (strings)
+and sent to the client.
+Data exchanges are done as JSON strings.
 */
 
 /*
 Use browser to view pages at http://localhost:3000/assignment1.html
-
-When the blue cube is moved with the arrow keys, a POST message will be
-sent to the server when the arrow key is released. The POST message will
-contain a data string which is the location of the blue cube when the
-arrow key was released. The server sends back a JSON string which the client should use
-to put down a "waypoint" for where the arrow key was released
-
-Also if the client types in the app text field and presses the "Submit Request" button
-a JSON object containing the text field text will be send to this
-server in a POST message.
-
-Notice in this code we attach an event listener to the request object
-to receive data that might come in in chunks. When the request end event
-is posted we look and see if it is a POST message and if so extract the
-data and process it.
-
-
+The client, via the text field can request songs
+The server has a hardcoded set of song files:
+"Peaceful Easy Feeling"
+"Sister Golden Hair"
+"Brown Eyed Girl"
 */
 
-//Cntl+C to stop server (in Windows CMD console)
-
-//DATA to be used in a future tutorial exercise.
-/*Exercise: if the user types the title of a song that the server has,
-  the server should send a JSON object back to the client to replace
-  the words array in the client app.
-*/
-
-//CITATION- skeleton code from http://people.scs.carleton.ca/~ldnel/2406winter2018/tutorials/Tutorial02/
-//hard coded songs to serve client
-var peacefulEasyFeeling = [];
-
-var block = [];
-var block2 = [];
-var block3 = [];
-
-var sisterGoldenHair = [];
-
-
-var brownEyedGirl = [];
-
-
-var songs = {
-  "Peaceful Easy Feeling": peacefulEasyFeeling,
-  "Sister Golden Hair": sisterGoldenHair,
-  "Brown Eyed Girl": brownEyedGirl
+var songFiles = {
+  "Peaceful Easy Feeling": "songs/Peaceful Easy Feeling.txt",
+  "Sister Golden Hair": "songs/Sister Golden Hair.txt",
+  "Brown Eyed Girl": "songs/Brown Eyed Girl.txt"
 };
 
 //Server Code
 var http = require("http"); //need to http
-var fs = require("fs"); //need to read static files
+var fs = require("fs"); //need to read and write  files
 var url = require("url"); //to parse url strings
-
-fs.readFile("songs/Sister Golden Hair.txt", function(err,data){
-    if (err) throw err;
-
-    block = data.toString().split("\n"); //x = ['hello hi bye', 'nikjrs hi hello', 'docls yucl']
-    var array= [];                      //x1 = ['hello','hi','bye','nikirs','hi']<-array of objects
-
-    for(var i=0; i<block.length; i++){
-        array=block[i].split(" ");
-        for(var j=0; j<array.length; j++){
-            sisterGoldenHair.push({word: array[j], x:10+j*100, y:50+i*55});
-
-        }
-    }
-});
-
-fs.readFile("songs/Brown Eyed Girl.txt", function(err,data){
-    if (err) throw err;
-
-    block2= data.toString().split("\n");// Splitting the song into its blocks
-
-    for(var i=0; i<block2.length;i++){
-        array=block2[i].split(" ");//splitting the block into each word
-        for(var j=0; j<array.length;j++){
-            brownEyedGirl.push({word: array[j], x:10+j*150, y:50+i*55})//pushing each individual word
-        }
-    }
-});
-
-fs.readFile("songs/Peaceful Easy Feeling.txt", function(err,data){
-    if (err) throw err;
-
-    block3 = data.toString().split("\n");// Splitting the song into its blocks
-
-    for(var i=0; i<block3.length; i++){
-        array=block3[i].split(" ");//splitting the block into each word
-        for(var j=0;j<array.length;j++){
-            peacefulEasyFeeling.push({word: array[j], x:10+j*153, y:50+i*55})//pushing each individual word
-        }
-    }
-
-});
-
-
-var counter = 1000; //to count invocations of function(req,res)
 
 var ROOT_DIR = "html"; //dir to serve static files from
 
@@ -146,52 +72,63 @@ http
 
     //event handler for the end of the message
     request.on("end", function() {
-      console.log("received data: ", receivedData);
-      console.log("type: ", typeof receivedData);
+      //Handle the client POST requests
+      //console.log('received data: ', receivedData);
 
-      //if it is a POST request then echo back the data.
+      //If it is a POST request then we will check the data.
       if (request.method == "POST") {
+        //Do this for all POST messages
         var dataObj = JSON.parse(receivedData);
         console.log("received data object: ", dataObj);
         console.log("type: ", typeof dataObj);
-        //Here we can decide how to process the data object and what
-        //object to send back to client.
-        //FOR NOW EITHER JUST PASS BACK AN OBJECT
-        //WITH "text" PROPERTY
-
-        //TO DO: return the words array that the client requested
-        //if it exists
-
-
         console.log("USER REQUEST: " + dataObj.text);
-        //allows the canvas to acess the data
         var returnObj = {};
-        //returnObj.text = "NOT FOUND: " + dataObj.text;
-        if(dataObj.text == "Peaceful Easy Feeling"){
-            returnObj.text = "Found" + dataObj.text;
-            returnObj.wordArray = peacefulEasyFeeling;
-            returnObj.textArray = block3;
-        }else if(dataObj.text == "Sister Golden Hair"){
-            returnObj.text = "Found" + dataObj.text;
-            returnObj.wordArray = sisterGoldenHair;
-            returnObj.textArray = block;
-        }else if(dataObj.text== "Brown Eyed Girl"){
-            returnObj.text = "Found" +dataObj.text;
-            returnObj.wordArray = brownEyedGirl;
-            returnObj.textArray = block2;
-        }else {
-            returnObj.text = "NOT FOUND: " +dataObj.text;
-        }
-
-        // for(i=0; i<returnObj.word.length ; i++){
-        // textDiv.innerHTML=textDiv.innerHTML+`<p> ${returnObj.wordArray[i]};</p>`
-        // }
-        //object to return to client
-        response.writeHead(200, { "Content-Type": MIME_TYPES["txt"] });
-        response.end(JSON.stringify(returnObj)); //send just the JSON object
+        returnObj.text = "NOT FOUND: " + dataObj.text;
       }
 
-      if (request.method == "GET") {
+      if (request.method == "POST" && urlObj.pathname === "/fetchSong") {
+        //a POST request to fetch a song
+        var songFilePath = ""; //path to requested song file
+        for (title in songFiles) {
+          //console.log(title + " : " + dataObj.text);
+          if (title === dataObj.text) {
+            songFilePath = songFiles[title];
+            returnObj.text = "FOUND";
+          }
+        }
+
+        //look for the song file in the /songs directory
+        if (songFilePath === "") {
+          response.writeHead(200, { "Content-Type": MIME_TYPES["json"] });
+          response.end(JSON.stringify(returnObj)); //send just the JSON object
+        } else {
+          //Found the song file
+          fs.readFile(songFilePath, function(err, data) {
+            //Read song data file and send lines and chords to client
+            if (err) {
+              returnObj.text = "FILE READ ERROR";
+              response.writeHead(200, { "Content-Type": MIME_TYPES["json"] });
+              response.end(JSON.stringify(returnObj));
+            } else {
+              var fileLines = data.toString().split("\n");
+              //get rid of any return characters
+              for (i in fileLines)
+                fileLines[i] = fileLines[i].replace(/(\r\n|\n|\r)/gm, "");
+              returnObj.text = songFilePath;
+              returnObj.songLines = fileLines;
+              returnObj.filePath = songFilePath;
+              response.writeHead(200, { "Content-Type": MIME_TYPES["json"] });
+              response.end(JSON.stringify(returnObj));
+            }
+          });
+        }
+      } else if (request.method == "POST") {
+        //Not found or unknown POST request
+        var returnObj = {};
+        returnObj.text = "UNKNOWN REQUEST";
+        response.writeHead(200, { "Content-Type": MIME_TYPES["json"] });
+        response.end(JSON.stringify(returnObj));
+      } else if (request.method == "GET") {
         //handle GET requests as static file requests
         var filePath = ROOT_DIR + urlObj.pathname;
         if (urlObj.pathname === "/") filePath = ROOT_DIR + "/index.html";
