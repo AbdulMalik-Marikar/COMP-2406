@@ -39,21 +39,29 @@ var words = [];
 // words.push({ word: "lay", x: 530, y: 50 });
 
 var movingString = {
-  word: "O",
-  x: 100,
-  y: 100,
+  word: "",
+  x: 300,
+  y: 150,
+  radius:7,
   xDirection: 1, //+1 for leftwards, -1 for rightwards
   yDirection: 1, //+1 for downwards, -1 for upwards
-  stringWidth: 50, //will be updated when drawn
-  stringHeight: 24
+  stringWidth: 7, //will be updated when drawn
+  stringHeight: 7
 }; //assumed height based on drawing point size
 
 //intended for keyboard control
-var movingBox = {
-  x: 50,
-  y: 50,
+var Player = {
+  x: 40,
+  y: 175,
   width: 10,
-  height: 50
+  height:70
+};
+
+var Player2={
+    x:560,
+    y:175,
+    width:10,
+    height:70
 };
 
 var timer; //used to control the free moving word
@@ -75,34 +83,40 @@ socket.on('blueBoxData', function(data) {
   console.log("data: " + data);
   console.log("typeof: " + typeof data);
   var locationData = JSON.parse(data);
-  movingBox.x = locationData.x;
-  movingBox.y = locationData.y;
+  Player.x = locationData.x;
+  Player.y = locationData.y;
+
   drawCanvas();
 })
 
+var img = new Image();
+
+img.src = 'background.jpg'
+
+
 function getWordAtLocation(aCanvasX, aCanvasY) {
-  //locate the word targeted by aCanvasX, aCanvasY
-  //find a word whose bounding box contains location (aCanvasX, aCanvasY)
+//   //locate the word targeted by aCanvasX, aCanvasY
+//   //find a word whose bounding box contains location (aCanvasX, aCanvasY)
 
   var context = canvas.getContext("2d");
 
-  for (var i = 0; i < words.length; i++) {
-    var wordWidth = context.measureText(words[i].word).width;
-    if (
-      aCanvasX > words[i].x &&
-      aCanvasX < words[i].x + wordWidth &&
-      (aCanvasY > words[i].y - wordHeight && aCanvasY < words[i].y)
-    ) {
-      //set word targeting rectangle for debugging display
-      wordTargetRect = {
-        x: words[i].x,
-        y: words[i].y - wordHeight,
-        width: wordWidth,
-        height: wordHeight
-      };
-      return words[i]; //return the word found
-    }
-  }
+  // for (var i = 0; i < words.length; i++) {
+  //   var wordWidth = context.measureText(words[i].word).width;
+  //   if (
+  //     aCanvasX > words[i].x &&
+  //     aCanvasX < words[i].x + wordWidth &&
+  //     (aCanvasY > words[i].y - wordHeight && aCanvasY < words[i].y)
+  //   ) {
+  //     //set word targeting rectangle for debugging display
+  //     wordTargetRect = {
+  //       x: words[i].x,
+  //       y: words[i].y - wordHeight,
+  //       width: wordWidth,
+  //       height: wordHeight
+  //     };
+  //     return words[i]; //return the word found
+  //   }
+  // }
 }
 
 var drawCanvas = function() {
@@ -115,8 +129,10 @@ var drawCanvas = function() {
   // context.fillRect(0, 0, canvas.width, canvas.height); //erase canvas
 
   context.font = "" + fontPointSize + "pt " + editorFont;
-  context.fillStyle = "black";
-  context.strokeStyle = "black";
+  context.fillStyle = "Black";
+  context.strokeStyle = "Grey";
+
+
 
   // for (var i = 0; i < words.length; i++) {
   //   var data = words[i];
@@ -124,14 +140,32 @@ var drawCanvas = function() {
   //   context.strokeText(data.word, data.x, data.y);
   // }
 
-  movingString.stringWidth = context.measureText(movingString.word).width;
-  context.fillText(movingString.word, movingString.x, movingString.y);
+
+  // movingString.stringWidth = context.measureText(movingString.word).width;
+  // context.fillText(movingString.word, movingString.x, movingString.y);
 
   //draw moving box
-  context.fillRect(movingBox.x, movingBox.y, movingBox.width, movingBox.height);
+  // context.fillRect(Player.x, Player.y, Player.width, Player.height);
+  // context.fillRect(Player2.x, Player2.y, Player2.width, Player2.height);
 
+ context.beginPath();
+ context.arc(movingString.x, movingString.y,7,0, 2 * Math.PI);
+ context.fillStyle= "#FF000";
 
-  //draw circle
+context.fill();
+
+ context.beginPath();
+ context.rect(Player.x, Player.y,Player.width,Player.height);
+ context.fillStyle= "Black";
+
+context.fill();
+
+context.beginPath();
+ context.rect(Player2.x, Player2.y, Player2.width,Player2.height);
+ context.fillStyle= "Black";
+
+context.fill();
+  // draw circle
   // context.beginPath();
   // context.arc(
   //   canvas.width / 2, //x co-ord
@@ -206,26 +240,58 @@ function handleMouseUp(e) {
   drawCanvas(); //redraw the canvas
 }
 
-//JQuery Ready function -called when HTML has been parsed and DOM
-//created
-//can also be just $(function(){...});
-//much JQuery code will go in here because the DOM will have been loaded by the time
-//this runs
+
+function Collide1(){
+  if (movingString.x+movingString.radius <= Player.x+Player.width && movingString.x+movingString.radius >= Player.x &&
+       movingString.y+movingString.radius <= Player.y+Player.height && movingString.y+movingString.radius >= Player.y)
+       return true;
+  if (movingString.x+movingString.radius <= Player.x+Player.width && movingString.x+movingString.radius >= Player.x &&
+       movingString.y+movingString.radius <= Player.y+Player.height && movingString.y+movingString.radius >= Player.y+Player.height)
+       return true;
+  if (movingString.x-movingString.radius <= Player.x+Player.width && movingString.x-movingString.radius >= Player.x &&
+       movingString.y+movingString.radius <= Player.y+Player.height && movingString.y+movingString.radius >= Player.y)
+       return true;
+  if (movingString.x-movingString.radius <= Player.x+Player.width && movingString.x-movingString.radius >= Player.x &&
+       movingString.y+movingString.radius <= Player.y+Player.height && movingString.y+movingString.radius >= Player.y+Player.height)
+        return true;
+  return false;
+}
+
+function Collide2(){
+  if (movingString.x+movingString.radius <= Player2.x+Player2.width && movingString.x+movingString.radius >= Player2.x &&
+       movingString.y+movingString.radius <= Player2.y+Player2.height  && movingString.y+movingString.radius >= Player2.y)
+       return true;
+  if (movingString.x+movingString.radius <= Player2.x+Player2.width && movingString.x+movingString.radius >= Player2.x &&
+      movingString.y+movingString.radius  <= Player2.y+Player2.height  && movingString.y+movingString.radius  >= Player2.y+Player2.height )
+       return true;
+  if (movingString.x-movingString.radius <= Player2.x+Player2.width && movingString.x-movingString.radius >= Player2.x &&
+       movingString.y+movingString.radius <= Player2.y+Player2.height  && movingString.y+movingString.radius >= Player2.y)
+        return true;
+  if (movingString.x-movingString.radius <= Player2.x+Player2.width && movingString.x-movingString.radius >= Player2.x &&
+       movingString.y+movingString.radius  <= Player2.y+Player2.height  && movingString.y+movingString.radius  >= Player2.y+Player2.height )
+        return true;
+  return false;
+}
 
 function handleTimer() {
-  movingString.x = movingString.x + 5 * movingString.xDirection;
-  movingString.y = movingString.y + 5 * movingString.yDirection;
+  movingString.x = movingString.x + 10 * movingString.xDirection;
+  movingString.y = movingString.y + 10 * movingString.yDirection;
 
   //keep moving word within bounds of canvas
-  if (movingString.x + movingString.stringWidth > canvas.width)
-    movingString.xDirection = -1;
-  if (movingString.x < 0) movingString.xDirection = 1;
-  if (movingString.y > canvas.height) movingString.yDirection = -1;
-  if (movingString.y - movingString.stringHeight < 0)
-    movingString.yDirection = 1;
+  if (movingString.x + movingString.radius > (canvas.width-1)||movingString.x-movingString.radius<1)
+    movingString.xDirection *= -1;
+
+  if(movingString.y+movingString.radius> (canvas.height-1)||movingString.y- movingString.radius<1)
+     movingString.yDirection *=-1;
+
+
+
+  if(Collide1()) movingString.xDirection*= -1;
+  if(Collide2()) movingString.xDirection *= -1;
 
   drawCanvas();
 }
+
 
 //KEY CODES
 //should clean up these hard coded key codes
@@ -234,41 +300,28 @@ var LEFT_ARROW = 37;
 var UP_ARROW = 38;
 var DOWN_ARROW = 40;
 
-var img = new Image();
 
-img.src = 'background.jpg'
-
-/*
-function pollingTimerHandler() {
-  //console.log("poll server");
-  var dataObj = { x: movingBox.x, y: movingBox.y}; //used by server to react as poll
-  //create a JSON string representation of the data object
-  var jsonString = JSON.stringify(dataObj);
-
-  //Poll the server for the location of the moving box
-  socket.emit('blueBoxData', jsonString)
-}
-*/
 function handleKeyDown(e) {
   console.log("keydown code = " + e.which);
 
-  var dXY = 5; //amount to move in both X and Y direction
-  if (e.which == UP_ARROW && movingBox.y >= dXY) movingBox.y -= dXY; //up arrow
+  var dXY = 10; //amount to move in both X and Y direction
+  if (e.which == UP_ARROW && Player.y >= dXY) Player.y -= dXY; //up arrow
   if (
     e.which == RIGHT_ARROW &&
-    movingBox.x + movingBox.width + dXY <= canvas.width
+    Player.x + Player.width + dXY <= canvas.width
   )
-    movingBox.x += dXY; //right arrow
-  if (e.which == LEFT_ARROW && movingBox.x >= dXY) movingBox.x -= dXY; //left arrow
+    Player.x += dXY; //right arrow
+  if (e.which == LEFT_ARROW && Player.x >= dXY) Player.x -= dXY; //left arrow
   if (
     e.which == DOWN_ARROW &&
-    movingBox.y + movingBox.height + dXY <= canvas.height
+    Player.y + Player.height + dXY <= canvas.height
   )
-    movingBox.y += dXY; //down arrow
+    Player.y += dXY; //down arrow
 
+    
   //upate server with position data
   //may be too much traffic?
-  var dataObj = { x: movingBox.x, y: movingBox.y };
+  var dataObj = { x: Player.x, y: Player.y };
   //create a JSON string representation of the data object
   var jsonString = JSON.stringify(dataObj);
 
@@ -279,7 +332,7 @@ function handleKeyDown(e) {
 
 function handleKeyUp(e) {
   console.log("key UP: " + e.which);
-  var dataObj = { x: movingBox.x, y: movingBox.y };
+  var dataObj = { x: Player.x, y: Player.y };
   //create a JSON string representation of the data object
   var jsonString = JSON.stringify(dataObj);
 
@@ -295,7 +348,7 @@ $(document).ready(function() {
   $(document).keyup(handleKeyUp);
 
   timer = setInterval(handleTimer, 100); //tenth of second
-  pollingTimer = setInterval(pollingTimerHandler, 100); //quarter of a second
+  // pollingTimer = setInterval(pollingTimerHandler, 100); //quarter of a second
   //timer.clearInterval(); //to stop
 
   drawCanvas();

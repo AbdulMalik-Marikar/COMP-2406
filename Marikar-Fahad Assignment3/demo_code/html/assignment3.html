@@ -25,7 +25,19 @@
          body {
             background: #dddddd;
          }
-
+         .button {
+             background-color: #008CBA;
+             border: none;
+             color: white;
+             border-radius: 12px;
+             padding: 15px 32px;
+             text-align: center;
+             text-decoration: none;
+             display: inline-block;
+             font-size: 16px;
+             margin: 4px 2px;
+             cursor: pointer;
+         }
 		 /*element selectors: */
 		 canvas {
 		    margin: 20px;
@@ -48,8 +60,10 @@
    </head>
 
   <body>
+     <button class="button">Player 1</button>
+     <input type="button" class="button" value="Player 2">
     <canvas id='canvas1' class='canvas' width='600' height='400'>
-        /*<img src="background.jpg" alt=Hockey" width="600" height="400"> */
+
       Canvas not supported
     </canvas>
     <script src="/socket.io/socket.io.js"></script>
