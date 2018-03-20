@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>2406</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+  <script src="https://www.w3schools.com/lib/w3.js"></script>
+<style>
+    /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+    .row.content {height: 1500px}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+    
+    /* Set black background color, white text and some padding */
+    header {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height: auto;} 
+    }  
+.red {
+	color: #F00;
+}
+.bold {
+	font-weight: bold;
+}
+.code {
+	font-family: "Courier New", Courier, monospace;
+}
+</style>
+</head>
+<body>
+<h1>COMP 2406 Winter 2018</h1>
+<h1>Assignment 4: Express App with API and DOM</h1>
+<h1 class="red">Due Date: Thu Mar 22 by 10:00pm in culearn</h1>
+<hr width="100%">
+<p class="red">Assignment
+  Revisions and Corrections will be noted here. </p>
+<p class="red">Rev 1 [Mar 8]. Requirement R3.1 now lists the URL's your server should support to launch the initial app for the client.</p>
+<hr>
+<h2>Node.js/Exress.js Recipe Server</h2>
+<p>The purpose of this assignment is to give you practice building an node.js application that accesses a public API, uses the express.js framework and uses client side javascript that manipulates the DOM (document object model) directly.</p>
+<p>This assignment is is based on work started in Tutorial 06 and accesses the food2fork public API. (If there is some other API you are keen to work with then discuss with me the possibility of substituting it for the recipe API instead.)</p>
+<p>The components are:</p>
+<p >Server build with just Node.js and the Express.js framework. </p>
+<p >Public food2fork API</p>
+<p >Client side application page served by the server.</p>
+<p >Client side javascript that manipulates the DOM (HTML elements) directly based on the data the client has requested from the server.</p>
+<p >Client-Server data exchange should be based on JSON</p>
+<p class="red">Assignment restrictions: <br>
+</p>
+<p class="red">You are now free to use Express.js and whatever other npm modules you find useful though no other ones are necessary for the assignment. </p>
+<p class="red"> Note: this, and other assignments, can be done in pairs if you want to work with a partner. Please submit one copy to culearn with both your names on it.</p>
+<hr width="100%">
+<p><span class="badge-danger">Marking:</span> This assignment 
+is based on <span class="badge-danger">16</span> design requirements numbered <span class="badge-success">R1.1</span>...<span class="badge-success">R3.7</span> for a total of <span class="badge-danger">32</span> marks. </p>  
+<p>Marks are awarded, or deducted, based on requirements as follows:</p>
+<table class="table table-bordered">
+<tr>
+  <td><span class="badge-danger">R0.x</span></td>
+  <td>The assignment gets 0 marks if <span class="font-weight-bold">any</span> submission requirement, shown in red, is not met.
+  </td>
+  </tr>
+  <tr>
+  <td><span class="badge-warning">R0.x</span></td>
+	  <td>5 marks are deducted from assignment score for <span class="font-weight-bold">each</span> good practice requirement, shown in yellow, not met.</td>
+  </tr>
+  <tr>
+    <td><span class="badge-success">Rx.x</span></td>
+  <td>We will award 2 marks for each design requirement that is met and well implemented, 1 mark for those only partly met or met but poorly implemented, and 0 marks for any not met.
+  </td>
+</tr>
+</table>
+<hr>
+<h2>Submission and Good Programming Practice Requirements</h2>
+<p>The following requirements pertain to all 
+your assignments regardless of what your application is supposed to do (i.e. 
+regardless of the design requirements). These requirements are to ensure that 
+your code is usable, readable, and maintainable.</p> 
+<p class="text-danger"><span class="badge badge-danger">R0.0</span> UNIQUENESS REQUIREMENT. The solution 
+and code you submit MUST be unique. That is, it cannot be a copy of, or be too 
+similar to, someone else's code, or other code found elsewhere. You are, however, free to use any code posted on our course web site as 
+part of our assignment solution. <span class="font-weight-bold">[Assigment mark =0 if this requirement is not met.]</span></p>
+<p class="text-danger"><span class="badge badge-danger">R0.1</span>
+CODE SUBMISSION ORGANIZATION AND COMPILATION: You should submit all the code files and data files necessary to compile and run your app. The TA's will execute your app with <span class="code">node app.js</span>. unless alternative instructions are provided in a <span class="code">README.txt</span> file. If you compress your code when submitting to culearn you must use only <span class="code">.zip</span> format (not .rar or .tar or whatever). Though you are permitted to write code on Windows, Linux, or Mac OS the code should be generic enough to be OS agnostic. Your code must work with at least a current Chrome browser. <span class="font-weight-bold">[Assigment mark =0 if this requirement is not met.]</span></p>
+<p class="text-danger"><span class="badge badge-danger">R0.2</span>
+	README FILE: Your submission must include a <span class="code">README.txt</span> file telling the TA how to setup and run your app. <span class="font-weight-bold">The TA should not have to look into your code to figure out how to start up your app.</span> Your <span class="code">README.txt</span> must contain the following:</p>
+<ul>
+<li>
+<p class="text-danger"><span class="font-weight-bold">Version:</span> node.js version number and OS your code was tested on.</p></li>
+<li>
+  <p class="text-danger"><span class="font-weight-bold">Install:</span> how to install needed code. This will likely look like <code>npm install</code> or <code>npm install module_name</code>(The preference is for npm install which uses a package.json configuration file that lists all the required modules.)</p></li>
+<li>
+<p class="text-danger"><span class="font-weight-bold">Launch:</span> Instructions on how to launch your app. e.g. <code>node myserver.js</code>. As the course progresses there will be more launch options to it's important to provide instructions.</p></li>
+<li>
+<p class="text-danger"> <span class="font-weight-bold">Testing:</span> Instructions on what the TA should do to run your app. e.g. visit http://localhost:3000/mytest.html?name=Louis. If your app requires a userid/password to run then provide one for the TA to use.</p></li>
+<p class="text-danger">Pay attention to any specific URL's that must be supported by your app. <span class="font-weight-bold">[Assigment mark =0 if this requirement is not met.]</span></p>
+<p class="text-danger">&nbsp;</p>
+</ul>
+<p><span class="badge badge-warning">R0.3</span> VARIABLE AND FUNCTION NAMES: All of 
+  your variables and functions should have meaningful names that reflect 
+  their purpose. Don't follow the convention common in math courses where they 
+  say things like: &quot;let x be the number of customers and let y be the number of 
+  products...&quot;. Instead call your variables <strong>numberOfCustomers</strong> or
+  <strong>numberOfProducts</strong>. Your program should not have any variables 
+  called &quot;x&quot; unless there is a good reason for them to be called &quot;x&quot;. (One 
+  exception: It's OK to call simple for-loop counters i,j and k etc. when the 
+  context is clear and VERY localized.) Remember javascript does not have typed variables or functions so choosing good names is even more important. Many functions in javascript are annonymous (have no name) and so the name of the variable that refers to them is even more important. <span class="font-weight-bold">[Minus 5 marks from assignment if this requirement is not met.]</span></p>
+<p><span class="badge badge-warning">R0.4</span> COMMENTS: Comments in your code 
+  must coincide with what the code actually does. It is a very common bug in 
+  industry for people to modify code and forget to modify the comments and so you 
+  end up with comments that say one thing and code that actually does another. By 
+  the way, try not to over-comment your code but instead choose good variable names 
+and function names that make the code more &quot;self commenting&quot;. <span class="font-weight-bold">[Minus 5 marks from assignment if this requirement is not met.]</span></p>
+<p><span class="badge badge-warning">R0.5</span> CITATION REQUIREMENT: If you use code from other sources you should cite the source in comments that appear with the code. If the source is an internet website then put the URL in the comments. You may use code from outside sources but this may not form the complete solution you are handing in. <span class="font-weight-bold">[Minus 5 marks from assignment if this requirement is not met.]</span></p>
+<p class="red">VERY IMPORTANT: Any 
+sample code fragments provided may have bugs (although none are put there intentionally). You must be prepared to find errors in the 
+requirements and sample code. Please report errors so they can be fixed and an assignment 
+revision noted.</p>
+<hr>
+<h1>Application Requirements</h1>
+<h2>Background</h2>
+<p>Public API's (often referred to as RESTful API's) have become very popular. They typically serve JSON data based on client HTTP queries. They also respect the stateless nature of HTTP -the client provides everything in each query that the server needs to respond. API's don't typically serve web-pages rather they serve data that other servers or &quot;smart&quot; clients can use to populate web pages. Or, in the internet of things, maybe no web pages are ever involved. API's are nice because their data can be consumed and repackaged in many different ways. </p>
+<p>We want to build a client-server app that uses the www.food2fork API for providing recipes based on ingredients specfied by the client. (If you want to substitute a different API in the assignment please discuss it with me ahead of time.)</p>
+<p>The client should access the application at <span class="code">http://localhost:3000/recipes</span> and they should be presented with a webpage that looks like the following:</p>
+<p><img src="images/new_output.jpg" alt="pics"></p>
+<h2>&nbsp;</h2>
+<p>&nbsp;</p>
+<h2>Application Requirements</h2>
+<h2>1) Server-Side Requirements</h2>
+<p><span class="badge badge-success">R1.1</span> The server should be built as an Express.js application. It could be a very simple or minimal express app or use many express features -no particular complexity is specified.</p>
+<p><span class="badge badge-success">R1.2</span> The server application should make use of a <span class="code">package.json</span> file to specify all the npm modules needed by your app (possibly only express.js) The marker should be able to install all the module by executing <span class="code">npm install</span>. DO NOT submit installed npm modules with your assignment. We want to install those ourselves and keep the submitted code size small. In other words, don't submit a <span class="code">node_modules</span> directory with your code.</p>
+<p><span class="badge badge-success">R1.3</span> Your <span class="code">package.json</span> file should list specific version numbers of the modules you install. Don't have it install &quot;the latest&quot; modules. You must be specific about the version number.</p>
+<p><span class="badge badge-success">R1.4</span> With Express.js and package.json comes new ways of launching your server app. Up until now we have always lauched with the command <span class="code">node myServer.js</span>. Make sure your <span class="code">README.txt</span> file tells us exactly how to launch your app;   the marker will not be expected to try and figure it out. Also include the instructions for installing the npm modules you need in your <span class="code">README.txt</span> file.</p>
+<p><span class="badge badge-success">R1.5</span> The server should obtain recipe data from the <span class="bold">www.food2fork </span>public API. The server code should contain the required APP ID which you need to obtain from www.food2fork. That is, hard-code your API key in your server so we can just run the code and not have to substitute other keys. (We promise not to abuse your key.)</p>
+<p><span class="badge badge-success">R1.6</span> The Server should provide its clients with recipe data when asked in the form of a JSON object. (The request could be either a GET or POST request depending on how you organize your application.)</p>
+<p><span class="badge badge-success">R1.7</span> If your server needs to serve static files to the client then it should provide a static server using the <span class="code">express use(express.static ...) </span><span class="bold">middleware</span>. If your application does not require a static server part then you don't need to provide this.<span class="code"></span></p>
+<p><span class="badge badge-success">R1.8</span> The amount of data served by the server should be reasonable. (If the food2fork queries provide too much data the server should reduce it to a reasonable amount before sending the response to the client).<span class="code"></span> Thus the client can be coded to render all the data provided by the server. Currently the API seems to serve 30 recipes by default. That is fine and you don't need to change that.</p>
+<p></p>
+<p>&nbsp;</p>
+<h2>2) Client-Server Data Exchange</h2>
+<p><span class="badge badge-success">R2.1</span> The recipe data exchanged between client and server should be in the form of JSON object strings. (The initial launch of the app will just be the result of a GET request for the app's web page). </p>
+<p>&nbsp;</p>
+<h2>3) Client Requirements</h2>
+<p><span class="badge badge-success">R3.1</span> The client should be able to reach the app at any of the following URL's <br>
+<span class="code">http://localhost:3000/recipes.html</span><br>
+<span class="code">http://localhost:3000/recipes</span><br>
+<span class="code">http://localhost:3000/index.html</span><br>
+<span class="code">http://localhost:3000/</span><br>
+<span class="code">http://localhost:3000</span></p>
+<p>That is, all those routes should amount to the same thing. Here you need to figure out the best way to handle multiple URL's that should resolve to the the same result. The specific set of recipes displayed, if any, as a result of visiting these URL's is up to you (unlike the next requirement R3.2).</p>
+<p><span class="badge badge-success">R3.2</span> The client should be able to start the app with <span class="code">http://localhost:3000/recipes?ingredients=Basil,Cumin</span> in which case the recipes shown would be those obtained from food2fork that include those ingredients. The purpose of this requirement is to have a convenience feature where the client can launch the app with an intial set of recipes based on the query parameter ingredients.
+</p>
+<p><span class="badge badge-success">R3.3</span> When the client types an ingredient into the labelled text box and presses the &quot;submit&quot; button (or whatever you want to call it) then a page should be refreshed with new recipe data obtained from the server.</p>
+<p><span class="badge badge-success">R3.4</span> A application should allow the user to enter a single ingredient or a list of comma-separated ingredients when requesting recipe data.</p>
+<p><span class="badge badge-success">R3.5</span> The client side javascript should use the JSON recipe data obtained from the server and modify the application web page by manipulating the DOM. That is, add or remove the appropriate HTML elements using client-side javascript (either native javascript or jQuery).</p>
+<p><span class="badge badge-success">R3.6</span> The client web page should show the recipe images as shown above or layed out in some other appropriately organized way.</p>
+<p><span class="badge badge-success">R3.7</span> The recipe images or recipe names should be active links. If the user clicks on one the browser should open the food2fork.com page for that recipe <span class="bold">in a new tab</span>. (You will need to research how to specify get a new browser tab -but it's not hard.)</p>
+<hr width="100%">
+</body>
+</html>
