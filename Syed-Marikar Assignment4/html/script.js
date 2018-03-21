@@ -25,7 +25,7 @@ function processInformation(response){
   for(var i = 0; i < recipeList.length;i++){
     //create divs for each recipe, and add the information and links to it
     var recipeDiv = $('<div class = "recipe">');
-    var image = $('<a href="'+recipeList[i].source_url + '"><img src="'+recipeList[i].image_url+'">');
+    var image = $('<a target="_blank" href="'+recipeList[i].source_url + '"><img src="'+recipeList[i].image_url+'">');
     var h1 = $('<h1>').html(recipeList[i].title);
     recipeDiv.append(image);
     recipeDiv.append(h1);

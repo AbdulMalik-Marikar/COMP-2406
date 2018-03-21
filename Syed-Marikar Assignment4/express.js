@@ -38,6 +38,7 @@ app.get('/recipes', (request, response) => {
       path: '/api/search/?key=5d1dd99edc65e3794fcb550af20a841a&q=' + ingredients
     };
   }
+
   var req = http.get(options, function(res) {
     var content = '';
     res.on('data', function(chunk) {
