@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>2406</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+  <script src="https://www.w3schools.com/lib/w3.js"></script>
+<style>
+    /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+    .row.content {height: 1500px}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+    
+    /* Set black background color, white text and some padding */
+    header {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height: auto;} 
+    }  
+.red {
+	color: #F00;
+}
+.bold {
+	font-weight: bold;
+}
+.code {
+	font-family: "Courier New", Courier, monospace;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>COMP 2406 Winter 2018</h1>
+<h1>Assignment 5: Show Me The Money</h1>
+<h1 class="red">Due Date: Thu Apr 5 by 10:00pm in culearn</h1>
+<hr width="100%">
+<p class="red">Assignment
+  Revisions and Corrections will be noted here.</p>
+<hr>
+<h2>Node.js/Express.js Yard&amp;Garage Shopping Site</h2>
+<p>The purpose of this assignment is to give you practice working within the code of a  realistic Express.js application. The app implements a store-front, or garage-sale, website where registered users  can buy products. The site uses  products in a mongodb database and registered users can browse  available items and, if desired, buy them from the site. There is not a lot of code to write for this assignment, in fact, it might be more like a tutorial in terms of the code you have to write. What will make this challenging though is navigating the existing code base and figuring out how to actually allow users to buy items using paypal using the <span class="code">paypal-rest-sdk</span> npm module. To do this assignment you will need a personal paypal account and a mongodb database server running on your development machine.</p>
+<p>This assigment will require you to do a lot of investigation. You need to learn the code base, work around issues that it might have and learn how modules work that you might want to use for your solution. (paypal-rest-sdk is the only one you actually need to add but you can investigate others as well.)</p>
+<p>You will likely need to stop and start the mongo database a bunch of times, maybe delete all its contents etc. Make a list for yourself of useful mongo commands. Remember you will need to have mongodb up and running to execute the webapp.</p>
+<p class="red">Assignment restrictions: <br>
+</p>
+<p class="red">You are now free to use Express.js and whatever other npm modules you find useful. The demo application already contains quite a few npm modules and you should try and figure out what they do and why the author chose them. The only npm module you are required to add is paypal-rest-sdk (or another alternative if you find one).</p>
+<p class="red"> Note: this, and other assignments, can be done in pairs if you want to work with a partner. Please submit only one copy to culearn with both your names on it.</p>
+<hr width="100%">
+<p><span class="badge-danger">Marking:</span> This assignment 
+is based on <span class="badge-danger">16</span> design requirements numbered <span class="badge-success">R1.1</span>...<span class="badge-success">R4.6</span> for a total of <span class="badge-danger">32</span> marks. </p>  
+<p>Marks are awarded, or deducted, based on requirements as follows:</p>
+<table class="table table-bordered">
+<tr>
+  <td><span class="badge-danger">R0.x</span></td>
+  <td>The assignment gets 0 marks if <span class="font-weight-bold">any</span> submission requirement, shown in red, is not met.
+  </td>
+  </tr>
+  <tr>
+  <td><span class="badge-warning">R0.x</span></td>
+	  <td>5 marks are deducted from assignment score for <span class="font-weight-bold">each</span> good practice requirement, shown in yellow, not met.</td>
+  </tr>
+  <tr>
+    <td><span class="badge-success">Rx.x</span></td>
+  <td>We will award 2 marks for each design requirement that is met and well implemented, 1 mark for those only partly met or met but poorly implemented, and 0 marks for any not met.
+  </td>
+</tr>
+</table>
+<hr>
+<h2>Submission and Good Programming Practice Requirements</h2>
+<p>The following requirements pertain to all 
+your assignments regardless of what your application is supposed to do (i.e. 
+regardless of the design requirements). These requirements are to ensure that 
+your code is usable, readable, and maintainable.</p> 
+<p class="text-danger"><span class="badge badge-danger">R0.0</span> UNIQUENESS REQUIREMENT. The solution 
+and code you submit MUST be unique. That is, it cannot be a copy of, or be too 
+similar to, someone else's code, or other code found elsewhere. You are, however, free to use any code posted on our course web site as 
+part of our assignment solution. <span class="font-weight-bold">[Assigment mark =0 if this requirement is not met.]</span></p>
+<p class="text-danger"><span class="badge badge-danger">R0.1</span>
+CODE SUBMISSION ORGANIZATION AND COMPILATION: You should submit all the code files and data files necessary to compile and run your app. The TA's will execute your app with <span class="code">node app.js</span>. unless alternative instructions are provided in a <span class="code">README.txt</span> file. If you compress your code when submitting to culearn you must use only <span class="code">.zip</span> format (not .rar or .tar or whatever). Though you are permitted to write code on Windows, Linux, or Mac OS the code should be generic enough to be OS agnostic. Your code must work with at least a current Chrome browser. <span class="font-weight-bold">[Assigment mark =0 if this requirement is not met.]</span></p>
+<p class="text-danger"><span class="badge badge-danger">R0.2</span>
+	README FILE: Your submission must include a <span class="code">README.txt</span> file telling the TA how to setup and run your app. <span class="font-weight-bold">The TA should not have to look into your code to figure out how to start up your app.</span> Your <span class="code">README.txt</span> must contain the following:</p>
+<ul>
+<li>
+<p class="text-danger"><span class="font-weight-bold">Version:</span> node.js version number and OS your code was tested on.</p></li>
+<li>
+  <p class="text-danger"><span class="font-weight-bold">Install:</span> how to install needed code. This will likely look like <code>npm install</code> or <code>npm install module_name</code>(The preference is for npm install which uses a package.json configuration file that lists all the required modules.)</p></li>
+<li>
+<p class="text-danger"><span class="font-weight-bold">Launch:</span> Instructions on how to launch your app. e.g. <code>node myserver.js</code>. As the course progresses there will be more launch options to it's important to provide instructions.</p></li>
+<li>
+<p class="text-danger"> <span class="font-weight-bold">Testing:</span> Instructions on what the TA should do to run your app. e.g. visit http://localhost:3000/mytest.html?name=Louis. If your app requires a userid/password to run then provide one for the TA to use.</p></li>
+<p class="text-danger">Pay attention to any specific URL's that must be supported by your app. <span class="font-weight-bold">[Assigment mark =0 if this requirement is not met.]</span></p>
+<p class="text-danger">&nbsp;</p>
+</ul>
+<p><span class="badge badge-warning">R0.3</span> VARIABLE AND FUNCTION NAMES: All of 
+  your variables and functions should have meaningful names that reflect 
+  their purpose. Don't follow the convention common in math courses where they 
+  say things like: &quot;let x be the number of customers and let y be the number of 
+  products...&quot;. Instead call your variables <strong>numberOfCustomers</strong> or
+  <strong>numberOfProducts</strong>. Your program should not have any variables 
+  called &quot;x&quot; unless there is a good reason for them to be called &quot;x&quot;. (One 
+  exception: It's OK to call simple for-loop counters i,j and k etc. when the 
+  context is clear and VERY localized.) Remember javascript does not have typed variables or functions so choosing good names is even more important. Many functions in javascript are annonymous (have no name) and so the name of the variable that refers to them is even more important. <span class="font-weight-bold">[Minus 5 marks from assignment if this requirement is not met.]</span></p>
+<p><span class="badge badge-warning">R0.4</span> COMMENTS: Comments in your code 
+  must coincide with what the code actually does. It is a very common bug in 
+  industry for people to modify code and forget to modify the comments and so you 
+  end up with comments that say one thing and code that actually does another. By 
+  the way, try not to over-comment your code but instead choose good variable names 
+and function names that make the code more &quot;self commenting&quot;. <span class="font-weight-bold">[Minus 5 marks from assignment if this requirement is not met.]</span></p>
+<p><span class="badge badge-warning">R0.5</span> CITATION REQUIREMENT: If you use code from other sources you should cite the source in comments that appear with the code. If the source is an internet website then put the URL in the comments. You may use code from outside sources but this may not form the complete solution you are handing in. <span class="font-weight-bold">[Minus 5 marks from assignment if this requirement is not met.]</span></p>
+<p class="red">VERY IMPORTANT: Any 
+sample code fragments provided may have bugs (although none are put there intentionally). You must be prepared to find errors in the 
+requirements and sample code. Please report errors so they can be fixed and an assignment 
+revision noted.</p>
+<hr>
+<h1>Application Requirements</h1>
+<h2>Background</h2>
+<p>The demo code <span class="code">shoppingApplication</span> provided with this assignment is extensive. It has been put together by Cuneyt Celebican who took 2406 last term (fall 2017) with me and is in my COMP 2601 mobile apps course this term (winter 2018). He has written this express.js app specifically for the COMP 2406 students to explore and modify. Thanks Cuneyt!</p>
+<p>The application makes use of the following features covered in COMP 2406:</p>
+	<ul>
+	  <li>MongoDB dabase to store users and product details.</li>
+	  <li>Makes use of cookies to implement a shopping cart (actually a shopping bag).</li>
+	  <li>Uses some bootstrap to provide  styling for the pages.</li>
+	  <li>Uses handlebars template rendering via the hbs npm module.</li>
+	  <li>Makes use of server npm modules to help out.</li>
+	  <li>Uses 302-redirects to move the client to new routes.</li>
+	  <li>Uses the Express.js Router feature</li>
+	</ul>
+<p>What you need to do first is get the app running and play with it a bit and proceed with the assignment requirements. Then we have to work around known issues (we have only one at this point -see requirements R2.1, R2.2)</p>
+<p>It is expected that you will add to the base code to build the missing features and you are free to make whatever modifications you want. Part of the fun will just be figuring out how all the parts of the app work. It is  typical of how Express.js apps are organized.</p>
+<p>&nbsp;</p>
+<h2>Running The Demo Code</h2>
+<p>Here are the instructions for running the demo code:</p>
+<ul>
+  <li>Install all the required npm modules by exectuing <span class="code">npm install</span>.</li>
+  <li>Start a mongodb database server running at its default port 27017.</li>
+  <li>Populate the mongodb database with the initial products buy executing <span class="code">node populate-for-startup.js</span> from the <span class="code">seed</span> directory provided. </li>
+  <li>Start the server by executing <span class="code">npm start</span>. (Look in the <span class="code">package.json</span> file to see why this starts the server and what actual node.js command gets executed.)</li>
+  <li>Visit the Yard&amp;Garage shopping site at<span class="code"> http://localhost:3000</span></li>
+  <li>On the Yard&amp;Garage site login as user: <span class="code">admin@admin.com</span> password: <span class="code">admin</span></li>
+</ul>
+<p>When you are up and running the initial login page at http://localhost:3000 should look like this:</p>
+<p><img src="images/prelim1-1.png" width="1006" height="646" alt=""/></p>
+<p>&nbsp;</p>
+<p>Login with a user account that was added to mongodb as part of the populate script, then the app should look like this:</p>
+<p><img src="images/prelim1-2.png" width="1090" height="678" alt=""/></p>
+<p>&nbsp;</p>
+<p>Play around with the app's features. They include among others:</p>
+<ul>
+  <li>Multiple Search with comma =&gt; itemName,ItemName2</li>
+  <li>Filters</li>
+  <li>Add Products</li>
+  <li>Delete Products</li>
+  <li>Update Products</li>
+  <li>Shopping Cart</li>
+</ul>
+<p>There are many features you could add or modify but what we want you to do for this assignment is the following:</p>
+<ul>
+  <li>Pay for items at checkout using paypal</li>
+  <li>Add Order History to database</li>
+</ul>
+<h2>&nbsp;</h2>
+<h2>Application Requirements</h2>
+<h2>1) Make It Your Business</h2>
+<p><span class="badge badge-success">R1.1</span> Decide what your store is going to sell and what products you want to offer. Replace the &quot;Yard &amp; Garage&quot; logo with one that reflects your business. (Make whatever other styling changes you want.)</p>
+<p><span class="badge badge-success">R1.2</span> Replace the <span class="code">populate-for-startup.js</span> file or change its contents in the <span class="code">seed</span> directory to populate the mongodb database with your products instead. Provide at least 10 products. You are free to, and encouraged to, change the properties (mongoose schema) of the products. Also add a user, or two, to the database including yourself (include the userid/password in your readme.txt file for the marker). If you want you can use multiple files: one to populate the products another one to  users etc. The marker will expect to run whatever files you provide in the <span class="code">seed</span> folder. Be mindful of the next requirement.</p>
+<p><span class="badge badge-success">R1.3</span> Make the <span class="code">populate-for-startup.js</span> file <strong>idempotent</strong> (see tutorial 8). If you have more than one file in the seed folder make sure they are all idempotent. That is, make it so that the effect of running the files several times is the same a running them only once so we don't get duplicates in the database. Also ensure that the code returns control to the terminal after adding the data to the database. (Again, see tutorial 8). We want your script code to first remove all existing items from the database when you run the script. Also make sure these files remove other things, like Orders, from the database. Running these files should reset the database completely that way the markers can run different student's populate scripts against their database server and have it populate data for the assignment they want to mark.</p>
+<p><span class="badge badge-success">R1.4</span> Provide a <span class="code">package.json</span> file so that we just have to execute <span class="code">npm install</span> before running your app.</p>
+<p><span class="badge badge-success">R1.5</span> We should be able to run your server by executing <span class="code">npm start</span> and then visit your website at <span class="code">http://localhost:3000</span> with a browser.</p>
+<p><span class="badge badge-success">R1.6</span> Your solution should support all the features currently in the demo code along with the new payment and order features described below.</p>
+<h2>2) Known Issues</h2>
+<p>With any code base you have to be prepared to work with some of its known issues. For this assignment you need to at least address the issue of floating point numbers intended to represent money (shopping bag totals) showing too many decimal places. In particular if you add a single item to the shopping bag you will likely see a nicely formated total like this:</p>
+<p><img src="images/decimals1-1.png" width="955" height="276" alt=""/></p>
+<p>However if multiple items are added or if items are added in quantity and then the quantity reduced the totals calculated can appear with too many decimal places which is not appropriate:</p>
+<p><img src="images/decimals1-2.png" width="956" height="316" alt=""/></p>
+<p>&nbsp;</p>
+<p>In part 4 where we want to actually pay for items with paypal we will need to fix this. You cannot send paypal an invoice price of $109.979999999999999 -it will reject that and send send back an error in the callback function. So in the next two requirements we want you to at least partly fix this problem. I say partly because ideally you should not represent money with floating point numbers but we won't go so far as to replace that -just make sure that results of the calculations are acceptable.</p>
+<p><span class="badge badge-success">R2.1</span> Money values shown to the user in the application should appear with two decimal places. For example the <strong>Total</strong> displayed in the shopping bag.</p>
+<p><span class="badge badge-success">R2.2</span> Money values communicated to the payment service (paypal) should be communicated with appropriate formatting (two decimal places). Actually paypal will reject it otherwise so you would not be able to proceed with the next part anyway if you don't address this.</p>
+<p class="red">Please point out other known issues as you discover them and we can discuss work-arounds but the above one is the only one you need actually address as part of the assignment.</p>
+<p>&nbsp;</p>
+<h2>3) Paypal Account and NPM Module Requirements</h2>
+<p>The main assigment exercise is to complete the application by allowing the user to actually pay for items when they checkout and press the <strong>Pay</strong> button. When this happens   the app should connect to Paypal and allow the user to actually pay for the items using their personal paypal account. To do this you will need a personal paypal account and we will use the &quot;sandbox&quot; developer feature that paypal provides so you can test paypal account without risk. (Be careful: if you go live instead you will be working with real accounts and real money -if some of you are brave enough to try this show me.)</p>
+<p>You can sign up for a paypal personal account at <a href="https://www.paypal.com/ca/home">https://www.paypal.com/ca/home</a></p>
+<p>The accounts are free and don't require that you link a credit card or bank account at time of creation.</p>
+<p>Use your personal account and log into the paypal developer site: <a href="https://developer.paypal.com">https://developer.paypal.com.</a> There you can create a sandbox account:</p>
+<p><img src="images/paypal-sandbox.png" width="1138" height="665" alt=""/></p>
+<p>&nbsp;</p>
+<p>The sandbox account will provide you with two sandbox, or pretend, user accounts: username-buyer@whereever.com and username-facilitator@whereever.com. You would presumably use the <strong>buyer</strong> account to buy products from the shopping site and you will hard-code the <strong>facilitator</strong> account into your app to receive the money from buyers. </p>
+<p>You can create associated apps with your sandbox account. Here I've created an app LDNShopping that will access paypal's REST API:</p>
+<p><img src="images/paypal-myapps.png" width="1141" height="489" alt=""/></p>
+<p>&nbsp;</p>
+<p>Once your paypal app is created you need to generate API keys that consist of a <strong>client-id</strong> and a <strong>client-secret</strong>. These both serve as API keys but also identify the client which allows you to make that account the target where money from purchases can be deposited. Here is a screen capture of how client-id and secret are appear. The client-id and client-sercret will be hard-coded into your app to receive payments from purchases.</p>
+<p><img src="images/paypalIDandSecret.png" width="1201" height="804" alt=""/></p>
+<p>&nbsp;</p>
+<p>With your paypal sandbox account created you can now proceed with the assignment requirements. </p>
+<p>Here are the requirements.</p>
+<p><span class="badge badge-success">R3.1</span> The application should make use of the <span class="code">paypal-rest-sdk</span> npm module that allows your app to connect with paypal's REST API. You can learn more about it at these links and others that you search for:<br>
+  <a href="https://www.npmjs.com/package/paypal-rest-sdk">https://www.npmjs.com/package/paypal-rest-sdk</a><br>
+  <a href="http://paypal.github.io/PayPal-node-SDK/">http://paypal.github.io/PayPal-node-SDK/</a></p>
+<p>This is a big part of the assignment - learning how this works from the online documentation and then incorporating it into the application.<br>
+</p>
+<p>&nbsp;</p>
+<p><span class="badge badge-success">R3.2</span> Your application should hard-code the paypal configuration keys so we can run your app without entering that. It would look something like the following: Here <span class="code">paypal</span> would be the result of executing <span class="code">var paypal            = require('paypal-rest-sdk')</span> likely in the <span class="code">app.js</span> file (already there).</p>
+<pre>
+//Paypal configuration
+paypal.configure({
+  'mode': 'sandbox', //sandbox or live
+  'client_id': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+  'client_secret': 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+});
+	</pre>
+  <p>You will use the <span class="code">client_id</span> and <span class="code">client_secret</span> from your paypal developer sandbox account as described above. Again make sure you hard-code this so we can run your server otherwise we will not be able to test any of your requirements. The <span class="code">client_id</span> used above represents the paypal (sandbox) account where money will be deposited when users buy products using their own paypal account. That is, this app hard-codes the app id of the account where money will be deposited but buyers will enter their own paying account details as part of the paypal checkout procedure. That way, if the marking TA buys an item from your webapp a record of that will show up in your facilitator paypal account (in effect, paying you with money rather than marks -this could be the future of how assignments get graded).</p>
+<p>&nbsp;</p>
+<h2>4) Checkout Requirements</h2>
+<p>When a user has added an item to their shopping bag and they click on the shopping bag they are taken to a  page that looks like this:</p>
+<p>&nbsp;</p>
+<p><img src="images/checkout1-1.png" width="1003" height="460" alt=""/></p>
+<p>&nbsp;</p>
+<p>Upon clicking the <strong>Checkout</strong> button the user is taken to a page which includes a <strong>Pay</strong> button:</p>
+<p>&nbsp;</p>
+<p><img src="images/checkout1-2.png" width="1102" height="694" alt=""/></p>
+<p>&nbsp;</p>
+<p>Currently, in the demo code, when you click the <strong>Pay</strong> button you will randomly either be directed to a success or cancelled page (find out where this happens in the code): </p>
+<p><img src="images/demo-success.png" width="670" height="343" alt=""/></p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="images/demo-cancelled.png" width="626" height="313" alt=""/></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Here is the behaviour you need to implement:</p>
+<p><span class="badge badge-success">R4.1</span> When the client presses the Pay button on the checkout page the application should connect to paypal. A buyer's account may or may not already be provided (that is up to you). The user should see the paypal page:</p>
+<p><img src="images/checkout1-3.png" width="969" height="666" alt=""/></p>
+<p>&nbsp;</p>
+<p>The above behaviour, for example, might be the result of the website making a GET or POST request to the server to a /checkout/checkout-progress route or whatever you decide to use.</p>
+<p>&nbsp;</p>
+<p><span class="badge badge-success">R4.2</span> When the client logs into paypal as the result of the above screen they should see the <strong>Continue</strong> screen from paypal as shown below (There is nothing you likely need to do to have this happen because the user is now seeing paypal pages.)</p>
+<p><img src="images/checkout1-4.png" width="1102" height="694" alt=""/></p>
+<p>&nbsp;</p>
+<p><span class="badge badge-success">R4.3</span> When the client makes a payment they should be taken to a screen in your app that might look like the following:</p>
+<p>&nbsp;</p>
+<p><img src="images/checkout1-5.png" width="962" height="525" alt=""/></p>
+<p>&nbsp;</p>
+<p>The page should provide them with an <strong>Order History</strong> option and a <strong>Go to Home</strong> option. If the <strong>Order History</strong> option is selected they should see the order history which includes that purchase and any others they made since the server was started:</p>
+<p>&nbsp;</p>
+<p><img src="images/checkout1-6.png" width="1093" height="481" alt=""/></p>
+<p>The Order History page is actually already coded in the demo code however it will likely be empty because no order data is being put in the mongodb database yet. To get this to work you need to add order data as part of the checkout process (see the the next requirement). Note you will also be able to see the orders in your paypal <strong>facilitator</strong> sandbox account (though the marker can't because that is in your account):</p>
+<p><img src="images/orders1-1.png" width="912" height="624" alt=""/></p>
+<p>&nbsp;</p>
+<p><span class="badge badge-success">R4.4</span> As a result of a successful purchase the server should add information about that order to the mongodb database. For example, the screen above is based on a document added to mongo with the following code:</p>
+  <pre>	        
+            var newOrder = new Order({
+                orderID             : paymentInformation.id,
+                username            : req.user.username,
+                address             : userAddress,
+                orderDate           : payment.create_time,
+                shipping            : true
+              });
+            newOrder.save();
+	</pre>
+  <p>These are the orders that would be shown as a result of clicking the Order History button.</p>
+  <p>&nbsp;</p>
+  <p><span class="badge badge-success">R4.5</span> When the client makes a purchase the shopping bag should be cleared (items removed). It is up to you whether you clear it as well if they cancel a payment -typically they would not be removed.</p>
+  <p>&nbsp;</p>
+<p><span class="badge badge-success">R4.6</span> If the user chooses to cancel the payment on the paypal screen they  should be taken to a &quot;payment cancelled&quot; screen in your app. It is up to you whether you leave current items in the shopping bag.</p>
+<p><img src="images/payment-cancel1-1.png" width="959" height="576" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/payment-cancel1-2.png" width="986" height="524" alt=""/></p>
+<p>&nbsp;</p>
+<p>If you complete these requirements you will have a pretty much working storefront   ready for the big time.</p>
+<p>&nbsp;</p>
+<hr width="100%">
+</div>
+</body>
+</html>

@@ -22,7 +22,7 @@ html {
 
 .recipe img {
     width: 100%;
-    height: 300px;
+    height: 325px;
 }
 
 h2 {
@@ -33,6 +33,9 @@ h1 {
   font-size: 20px;
 }
 
+h3 {
+  font-size: 30px;
+}
 a {
     text-decoration: none;
     color: inherit;

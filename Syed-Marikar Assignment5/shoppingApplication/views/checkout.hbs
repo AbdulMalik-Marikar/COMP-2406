@@ -1,0 +1,27 @@
+<div class="row">
+    <div class="col-md-8 col-centered">
+        <div class="checout-logo"><a href="/"><img src="/images/logo.png"></a></div>
+        <div class="checkout-wrapper border-around rad5 pad20">
+           <div class="list-of-products">
+               <div class="checkout-title title">
+                    <h1>Checkout</h1>
+                </div>
+               <div class="checkout-description">
+                   Hi <strong>{{userFirstName}},</strong> <br>
+                   Please review your items and press the pay button. You will enter your address information while your paying on PayPal
+               </div>
+               {{>itemList}}
+
+                <form action="/checkout/checkout-process" method="POST">
+                    <input type="text" hidden value="{{description}}" name="paymentDescriptionField">
+                    <input type="text" hidden value="{{amount}}" name="paymentAmountField">
+                    <div class="checkout-pay-wrapper">
+                        <div class="pay-button">
+                            <button type="submit" class="btn btn-primary pad10 full-width btn-success-only-border">Pay</button>
+                        </div>
+                    </div>
+                </form>
+           </div>
+        </div>
+    </div>
+</div>

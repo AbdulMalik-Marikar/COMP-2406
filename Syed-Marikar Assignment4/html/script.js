@@ -19,10 +19,11 @@ $(document).ready(function (){
 });
 
 function processInformation(response){
-    console.log("hi");
+
   var recipeList = response.recipes;
-  console.log(recipeList);
+  //console.log(recipeList[i]);
   for(var i = 0; i < recipeList.length;i++){
+      console.log(recipeList[i]);
     //create divs for each recipe, and add the information and links to it
     var recipeDiv = $('<div class = "recipe">');
     var image = $('<a target="_blank" href="'+recipeList[i].source_url + '"><img src="'+recipeList[i].image_url+'">');

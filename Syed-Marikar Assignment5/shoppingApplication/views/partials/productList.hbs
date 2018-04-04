@@ -1,0 +1,13 @@
+{{#each products}}
+    <!-- Product starts -->
+    
+    <div class="col-md-4">
+        <div class="product-wrapper">
+            <div class="product-image"><a href="product-overview?id={{_id}}"><img src="{{imagePath}}"></a></div>
+            <div class="product-title">{{title}}</div>
+            <div class="product-price">${{price}} CAD</div>
+        </div>
+    </div>
+    
+    <!-- Product ends -->
+{{/each}}

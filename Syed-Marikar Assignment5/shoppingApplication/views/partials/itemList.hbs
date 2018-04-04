@@ -1,0 +1,21 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th class="text-left">Title</th>
+            <th class="text-center">Qty</th>
+            <th class="text-right">Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each items}}
+            <tr>
+                <td class="text-left">{{this.item.title}}</td>
+                <td class="text-center">{{this.qty}}</td>
+                <td class="text-right">${{this.price}}</td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
+<div class="payment-total-wrapper">
+    <div class="total-amount"><span>Total: </span>${{totalPrice}}</div>
+</div>

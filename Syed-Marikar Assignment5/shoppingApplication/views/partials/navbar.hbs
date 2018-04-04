@@ -1,0 +1,41 @@
+<!-- Header starts -->
+<header class="site-header {{customNavbar}}">
+  <nav class="navbar navbar-default navbar-fixed-top navbar-inside">
+      <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/images/logo.png"></a>
+        </div>
+    
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <div class="navbar-form navbar-left search-bar">
+            <form class="form-group" action="/search" method="POST">
+              <input type="text" class="form-control" placeholder="Search Product" name="seaarchField" id="seaarchField">
+              <button type="submit" class="btn btn-default">Search</button>
+            </form>
+          </div>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/">Products</a></li>
+            <li><a href="/shopping-bag"><i class="fa fa-shopping-basket" aria-hidden="true"></i> Shopping Bag <span class="badge">{{session.cart.totalQty}}</span></a></li>
+            <li class="dropdown user-info">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hello, {{userFirstName}}<span class="caret"></span></a>
+              <ul class="dropdown-menu custom-navbar-dropdown">
+                <li><a href="/order-history"><i class="fa fa-history" aria-hidden="true"></i> Order History</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="/users/logout"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a></li>
+              </ul>
+            </li>
+          </ul>
+
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+</header>
+<!-- Header ends -->

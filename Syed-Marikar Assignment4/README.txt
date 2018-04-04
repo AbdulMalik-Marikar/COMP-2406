@@ -17,3 +17,5 @@ Testing:
 
 	Start with this url because it allows for search with multiple ingredients
 	http://localhost:3000/recipes?ingredients=Basil,Cumin
+	
+	When using the searchbar with multiple ingredients dont use a space.
