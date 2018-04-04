@@ -1,0 +1,14 @@
+{
+  "name": "assignment4",
+  "version": "1.0.0",
+  "description": "Abdul Malik Marikar 101042166 Ishaq Syed 101032695",
+  "main": "express.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ishaq Syed and Abdul Malik Marikar",
+  "license": "ISC",
+  "dependencies": {
+    "express.js": "^1.0.0"
+  }
+}
