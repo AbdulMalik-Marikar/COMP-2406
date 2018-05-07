@@ -76,7 +76,7 @@ router.get('/shopping-bag', ensureAuthenticated, function(req, res, next){
   }
   else{
     var cart = new Cart(req.session.cart);
-    res.render('shoppingBag', {items: cart.generateArray(), totalPrice: cart.totalPrice, containerWrapper: 'container', userFirstName: req.user.fullname})
+    res.render('shoppingBag', {items: cart.generateArray(), totalPrice: (cart.totalPrice).toFixed(2), containerWrapper: 'container', userFirstName: req.user.fullname})
   }
 });
 
@@ -137,7 +137,7 @@ router.post('/filters', ensureAuthenticated, function(req, res, next){
   else{
     res.redirect('/')
   }
-  
+
 });
 
 
@@ -194,7 +194,7 @@ router.get('/update/:id', ensureAuthenticated, function(req, res, next){
       console.log(err);
     } else {
       res.render('updateProduct', {title: 'Update product',userFirstName: req.user.fullname, product: item});
-      
+
     }
   });
 });
@@ -207,7 +207,7 @@ router.get('/update/', ensureAuthenticated, function(req, res, next){
 // POST update page
 router.post('/update', ensureAuthenticated, function(req, res, next){
   let aProductId = req.body.id;
-  Product.findOneAndUpdate({"_id": aProductId}, 
+  Product.findOneAndUpdate({"_id": aProductId},
   { $set: {
     "imagePath"   : req.body.imagePath,
     "title"       : req.body.title,
@@ -223,7 +223,7 @@ router.post('/update', ensureAuthenticated, function(req, res, next){
       res.redirect('/');
     }
   });
-  
+
 });
 
 function escapeRegex(text) {

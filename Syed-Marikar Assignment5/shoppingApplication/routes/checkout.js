@@ -2,7 +2,10 @@ var express                 = require('express');
 var router                  = express.Router();
 var Cart                    = require('../models/cart');
 var Order                   = require('../models/order');
-var paypal = require('paypal-rest-sdk')
+var paypal                  = require('paypal-rest-sdk');
+var time;
+
+
 //Paypal configuration
 paypal.configure({
   'mode': 'sandbox', //sandbox or live
@@ -21,7 +24,7 @@ router.get('/', ensureAuthenticated, function(req, res, next){
 
 // POST checkout-process
 router.post('/checkout-process', function(req, res){
-   //console.log(`ROUTE: POST CHECKOUT-PROGRESS`)
+   console.log(`ROUTE: POST CHECKOUT-PROGRESS`)
     var cart = new Cart(req.session.cart);
     var totalPrice = cart.totalPrice;
     var create_payment_json = {
@@ -65,22 +68,23 @@ paypal.payment.create(create_payment_json, function (error, payment) {
 });
     console.log('ROUTE: POST CHECKOUT_PROGRESS')
 
-});
+    });
 
 
 // GET checkout-success
 router.get('/checkout-success', ensureAuthenticated, function(req, res){
     req.session.cart={};
-    var newOrder= new order({
+    var newOrder= new Order({
         orderID             :req.query.paymentId,
         username            :req.user.username,
         address             :"1234 Main Street, Ottawa ON K2Y 7D6",
         orderDate           : time,
-        shipping            :true
+        shipping            : true
     });
-    newOreder.save();
+    newOrder.save();
 
     console.log(`ROUTE: GET CHECKOUT-SUCCESS`)
+
     res.render('checkoutSuccess', {title: 'Successful', containerWrapper: 'container', userFirstName: req.user.fullname})
 });
 

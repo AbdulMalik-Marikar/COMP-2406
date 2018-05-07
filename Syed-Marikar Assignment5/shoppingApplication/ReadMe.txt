@@ -1,43 +1,15 @@
-To run this app you need a personal Paypal Account
-You can create on at paypal.com
-When you create the account you don't need to link a credit card or bank account at that
-time. I just ignored that step when prompted and it created the account anyway. I received confirmation by email.
+COMP 2406 Assignment 5
 
-1) Changing paypal account
-Visit app.js file then change client_id and client_secret with your 
-paypal sandbox account. 
+Created by: Ishaq Syed(101032695) and Abdul-Malik Marikar(101042166)
 
-You can create a sandbox account from below link
-https://developer.paypal.com/
+Version: Node(8.9.4) OS:Windows 10, Mac.
 
-3) Setup project
-Before starting application please run the populate-for-startup.js 
-file inside the seed directory to populate the mongodb database.
-You can basically run the file with below command (after locating in the terminal)
-node populate-for-startup.js
+Install: npm install
 
-Install the npm module depedencies in package.json by exectuing:
-npm install
-
-4) Run the application
-In the application folder execute:
-npm start 
-then you can access from localhost at
-http://localhost:3000
-
-5) Login to the app using the dummy user for project:
-username : admin@admin.com
-password : admin
-
-5) Important
-Before starting application please make sure your mongo database runs.
-
-6) Features
-Add product
-Delete product
-Update product
-Buy item
-Shopping cart
-Order history
-Multiple search with comma => itemName,ItemName2
-Filters
+Excecute: 1-Install all the required npm modules by exectuing npm install.
+	  2-Start a mongodb database server running at its default port 27017. 
+	  3- Run node populate-for-startup.js from the seed directory
+	  4- Start the server by executing npm start
+	  5- go to http://localhost:3000
+	  6- login using Username:admin@admin.com
+			 Password:admin
